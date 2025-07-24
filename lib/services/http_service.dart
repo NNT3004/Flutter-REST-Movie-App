@@ -29,7 +29,7 @@ class HttpService {
     } on DioError catch (e) {
       print('Unable to perform GET request: ${e.message}');
       print('Error details: ${e.response?.data}');
-      return null;
+    
     }
   }
 }

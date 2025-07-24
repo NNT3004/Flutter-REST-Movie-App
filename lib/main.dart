@@ -2,14 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flickd_app/pages/splash_page.dart';
 import 'package:flickd_app/pages/main_page.dart';
+import 'package:get_it/get_it.dart';
+import 'package:flickd_app/models/app_config.dart';
+import 'package:flickd_app/services/movie_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Khởi tạo AppConfig (bạn có thể thay đổi giá trị cho phù hợp)
+  final appConfig = AppConfig(
+    BASE_API_URL: 'https://api.themoviedb.org/3/',
+    BASE_IMAGE_API_URL: 'https://image.tmdb.org/t/p/w500/',
+    API_KEY: 'YOUR_API_KEY',
+  );
+
+  // Đăng ký với GetIt
+  if (!GetIt.instance.isRegistered<AppConfig>()) {
+    GetIt.instance.registerSingleton<AppConfig>(appConfig);
+  }
+  if (!GetIt.instance.isRegistered<MovieService>()) {
+    GetIt.instance.registerSingleton<MovieService>(MovieService());
+  }
+
   runApp(
-    MaterialApp(
-      title: 'Flickd',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: AppEntry(),
+    ProviderScope(
+      child: MaterialApp(
+        title: 'Flickd',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: AppEntry(),
+      ),
     ),
   );
 }

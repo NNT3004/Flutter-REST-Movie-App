@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flickd_app/services/http_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flickd_app/models/movie.dart';
-import 'package:dio/dio.dart';
+
 
 class MovieService {
   final GetIt getIt = GetIt.instance;
