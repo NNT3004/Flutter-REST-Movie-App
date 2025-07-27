@@ -5,6 +5,7 @@ import 'package:flickd_app/pages/main_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flickd_app/models/app_config.dart';
 import 'package:flickd_app/services/movie_service.dart';
+import 'package:flickd_app/services/http_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,9 @@ void main() async {
   // Đăng ký với GetIt
   if (!GetIt.instance.isRegistered<AppConfig>()) {
     GetIt.instance.registerSingleton<AppConfig>(appConfig);
+  }
+  if (!GetIt.instance.isRegistered<HttpService>()) {
+    GetIt.instance.registerSingleton<HttpService>(HttpService());
   }
   if (!GetIt.instance.isRegistered<MovieService>()) {
     GetIt.instance.registerSingleton<MovieService>(MovieService());

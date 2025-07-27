@@ -35,6 +35,8 @@ class MainPage extends ConsumerWidget {
     _mainPageData = ref.watch(MainPageDataControllerProvider);
 
     _searchTextFieldController = TextEditingController();
+
+    _searchTextFieldController.text = _mainPageData.searchText;
     return _buildUI();
   }
 
@@ -118,7 +120,8 @@ class MainPage extends ConsumerWidget {
       height: _deviceHeight * 0.05,
       child: TextField(
         controller: _searchTextFieldController,
-        onSubmitted: (_input) {},
+        onSubmitted: (_input) => 
+          _mainPageDataController.updateTextSearch(_input),
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           focusedBorder: _border,
@@ -135,11 +138,13 @@ class MainPage extends ConsumerWidget {
 
   Widget _categorySelectionWidget() {
     return DropdownButton(
-      dropdownColor: Colors.black54,
-      value: SearchCategory.popular,
+      dropdownColor: Colors.black38,
+      value: _mainPageData.searchCategory,
       icon: Icon(Icons.menu, color: Colors.white24),
       underline: Container(height: 1, color: Colors.white24),
-      onChanged: (_value) {},
+      onChanged: (_value) => _value.toString().isNotEmpty 
+        ? _mainPageDataController.updateSearchCategory(_value.toString()) 
+        : null,
       items: [
         DropdownMenuItem(
           child: Text(
@@ -169,24 +174,23 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _movieListViewWidget() {
-    final List<Movie> _movie = [];
-    for (var i = 0; i < 20; i++) {
-      _movie.add(
-        Movie(
-          name: "Mortal Kombat",
-          language: "EN",
-          isAdult: false,
-          description: "A great movie about fighting game characters",
-          posterPath: "/path/to/poster.jpg",
-          backdropPath: "/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg",
-          rating: 7.8,
-          releaseDate: "2021-04-07",
-        ),
-      );
-    }
+    final List<Movie> _movie = _mainPageData.movies;
 
     if (_movie.length != 0) {
-      return ListView.builder(
+      return NotificationListener(
+        onNotification: (_onScrollNotification) {
+          if (_onScrollNotification is ScrollEndNotification) {
+            final before = _onScrollNotification.metrics.extentBefore;
+            final max = _onScrollNotification.metrics.maxScrollExtent;
+            if(before == max) {
+              _mainPageDataController.getMovies();
+              return true;
+            }
+            return false;
+          }
+          return false;
+        },
+        child: ListView.builder(
         itemCount: _movie.length,
         itemBuilder: (BuildContext _context, int _count) {
           return Padding(
@@ -204,6 +208,7 @@ class MainPage extends ConsumerWidget {
             ),
           );
         },
+      ),
       );
     } else {
       return Center(
