@@ -14,7 +14,7 @@ void main() async {
   final appConfig = AppConfig(
     BASE_API_URL: 'https://api.themoviedb.org/3/',
     BASE_IMAGE_API_URL: 'https://image.tmdb.org/t/p/w500/',
-    API_KEY: 'YOUR_API_KEY',
+    API_KEY: '9b3b38ec3e88d6914e9c92c042e742e7',
   );
 
   // Đăng ký với GetIt
